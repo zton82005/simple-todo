@@ -5,17 +5,11 @@ import Image from "next/image";
 
 export default function Home() {
 	const [newItem, setNewItem] = useState("");
-	const [todos, setTodos] = useState(
-		() => JSON.parse(localStorage.getItem("todos")) || []
-	);
+	const [todos, setTodos] = useState([]);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
 
 	const inputRef = useRef(null);
-
-	useEffect(() => {
-		localStorage.setItem("todos", JSON.stringify(todos));
-	}, [todos]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -62,6 +56,19 @@ export default function Home() {
 			)
 		);
 	};
+
+	useEffect(() => {
+		// Load todos from local storage when the component mounts
+		const storedTodos = localStorage.getItem("todos");
+		if (storedTodos) {
+			setTodos(JSON.parse(storedTodos));
+		}
+	}, []);
+
+	useEffect(() => {
+		// Save todos to local storage whenever the todos state changes
+		localStorage.setItem("todos", JSON.stringify(todos));
+	}, [todos]);
 
 	useEffect(() => {
 		if (isEditing) {
