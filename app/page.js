@@ -5,11 +5,17 @@ import Image from "next/image";
 
 export default function Home() {
 	const [newItem, setNewItem] = useState("");
-	const [todos, setTodos] = useState([]);
+	const [todos, setTodos] = useState(
+		() => JSON.parse(localStorage.getItem("todos")) || []
+	);
 	const [isEditing, setIsEditing] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
 
 	const inputRef = useRef(null);
+
+	useEffect(() => {
+		localStorage.setItem("todos", JSON.stringify(todos));
+	}, [todos]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
