@@ -12,7 +12,10 @@ export default function Home() {
 	const inputRef = useRef(null);
 
 	// State to track which item is marked as urgent
-	const [urgentItems, setUrgentItems] = useState({});
+	const [urgentItems, setUrgentItems] = useState(() => {
+		const storedUrgentItems = localStorage.getItem("urgentItems");
+		return storedUrgentItems ? JSON.parse(storedUrgentItems) : {};
+	});
 
 	const handleUrgentClick = (id) => {
 		setUrgentItems((prevUrgentItems) => ({
@@ -88,6 +91,10 @@ export default function Home() {
 		}
 	}, [isEditing]);
 
+	useEffect(() => {
+		localStorage.setItem("urgentItems", JSON.stringify(urgentItems));
+	}, [urgentItems]); // Save to localStorage whenever urgentItems changes
+
 	return (
 		<div className="flex flex-col items-center p-6 md:p-24 gap-10">
 			<h1 className="text-2xl">Today's Tasks</h1>
@@ -98,7 +105,7 @@ export default function Home() {
 				<label htmlFor="item"></label>
 				<input
 					ref={inputRef}
-					className="p-2 rounded-lg sm:rounded-tl-lg sm:rounded-bl-lg text-gray-500 flex-1 border border-gray-400"
+					className="p-2 rounded-lg sm:rounded-tl-lg sm:rounded-bl-lg text-gray-700 flex-1 border border-gray-400"
 					type="text"
 					placeholder="Enter a task"
 					value={newItem}
