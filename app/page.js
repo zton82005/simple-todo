@@ -11,6 +11,16 @@ export default function Home() {
 
 	const inputRef = useRef(null);
 
+	// State to track which item is marked as urgent
+	const [urgentItems, setUrgentItems] = useState({});
+
+	const handleUrgentClick = (id) => {
+		setUrgentItems((prevUrgentItems) => ({
+			...prevUrgentItems,
+			[id]: !prevUrgentItems[id], // Toggle urgency for specific ID
+		}));
+	};
+
 	const handleSubmit = (e) => {
 		e.preventDefault();
 
@@ -48,6 +58,8 @@ export default function Home() {
 	const handleDelete = (id) => {
 		setTodos((prevTodos) => prevTodos.filter((todo) => todo.id !== id));
 	};
+
+	const handleClick = () => {};
 
 	const handleCheckboxChange = (id) => {
 		setTodos((prevTodos) =>
@@ -105,9 +117,15 @@ export default function Home() {
 				<ul className="border border-gray-400 rounded-lg divide-y divide-gray-400">
 					{todos.map((todo) => {
 						const isBeingEdited = isEditing && todo.id === editItemId;
+						const isUrgent = urgentItems[todo.id] || false; // Check if urgent
 
 						return (
-							<li key={todo.id} className="flex items-center p-3">
+							<li
+								key={todo.id}
+								className={`flex items-center p-3 ${
+									isUrgent ? "bg-red-600" : "" // Apply bg-red-600 when urgent
+								}`}
+							>
 								<label className="flex items-center space-x-3 flex-1">
 									<input
 										className="text-white"
@@ -137,6 +155,17 @@ export default function Home() {
 									disabled={isBeingEdited}
 								>
 									<Image src="/trash.png" alt="delete" width={12} height={12} />
+								</button>
+								<button
+									className="p-3 rounded-lg border border-red-700 items-center ml-1"
+									onClick={() => handleUrgentClick(todo.id)}
+								>
+									<Image
+										src="/urgent.png"
+										alt="Urgent Task"
+										width={12}
+										height={12}
+									/>
 								</button>
 							</li>
 						);
